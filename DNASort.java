@@ -22,13 +22,38 @@ public class DNASort {
         Data[] res = new Data[m];
         for (int j = 0; j < m; j ++) {
           int measure = 0;
-          for (int k = 0; k < n - 1; k ++) {
-            for (int a = k + 1; a < n; a ++) {
-              if (dna[j].charAt(k) > dna[j].charAt(a)) {
-                measure ++;
-              }
+          // 根据题意，一种较为取巧的办法，因为只有ACGT四种字符
+          // 所以倒序循环，比常规两次循环快了100ms左右
+          // 跟C/C++比，java还是要慢很多。。。。
+          int A = 0, C = 0, G = 0;
+          for (int k = n - 1; k >= 0; k --) {
+            switch (dna[j].charAt(k)) {
+              case 'A':
+                A ++;
+                break;
+              case 'C':
+                C ++;
+                measure += A;
+                break;
+              case 'G':
+                G ++;
+                measure += A + C;
+                break;
+              case 'T':
+                measure += A + C + G;
+                break;
+              default:
+                break;
             }
           }
+          // 常规两次循环
+          // for (int k = 0; k < n - 1; k ++) {
+          //   for (int a = k + 1; a < n; a ++) {
+          //     if (dna[j].charAt(k) > dna[j].charAt(a)) {
+          //       measure ++;
+          //     }
+          //   }
+          // }
           res[j] = new Data(measure, dna[j]);
         }
         Arrays.sort(res, new MyComparator());
